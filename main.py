@@ -88,6 +88,10 @@ def send_result(device_name: str, yes_or_no: str):
 
 
 def main_for_role_question():
+    # first device to send a correct answer
+    # if empty, no correct answer received yet
+    device_first_correct = ""
+
     while True:
         # clear data from parsing of previous message
         device_name = ""
@@ -117,20 +121,26 @@ def main_for_role_question():
                 # briefly show the response on the coordinator node
                 if is_correct == "Y":
                     display.show(Image.YES, delay=100, clear=True)
+                    device_first_correct = device_name
                 elif is_correct == "N":
                     display.show(Image.NO, delay=100, clear=True)
 
         # button A sends the challenge
-        # button B does nothing
         if button_a.was_pressed():
             display.scroll(CHALLENGE)
             send_challenge(CHALLENGE, ANSWER_A, ANSWER_B)
+
+        # button B shows the winner, or flashes an icon if don't have one yet
+        if button_b.was_pressed():
+            if device_first_correct:
+                display.scroll("WINNER {}".format(device_first_correct))
+            else:
+                display.show(Image.CONFUSED, delay=10, clear=True)
 
 
 #
 # methods for participant role
 #
-
 
 def send_answer(answer: str):
     """send the user guess"""

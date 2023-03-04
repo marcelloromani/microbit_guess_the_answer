@@ -59,8 +59,14 @@ Flash the code onto the micro:bit
 
 # Gameplay
 
-* Quiz Master: press button "A" to send the challenge and the responses to the participants
+* Quiz Master: press button "A" to send the challenge and the two response options to the participants
 
-* Participants: Read the challenge and the two answers. Press "A" or "B" depending on which one you think is the correct one.
+* Participants: Read the challenge and the two possible answers.
 
-  A "tick" or "X" icon will appear if you guessed the correct answer or not.
+  Press "A" or "B" depending on which one you think is correct.
+
+  A "tick" or "X" icon will appear on your microbit
+
+* Quiz Master: press B to reveal the name (device id) of the fastest participant to answer correctly.
+
+  Press the reset button on the back of the microbit board to clear the winner name.
