@@ -130,12 +130,12 @@ def main_for_role_question():
             display.scroll(CHALLENGE)
             send_challenge(CHALLENGE, ANSWER_A, ANSWER_B)
 
-        # button B shows the winner, or flashes an icon if don't have one yet
+        # button B shows the winner, or flashes an icon if we don't have one yet
         if button_b.was_pressed():
             if device_first_correct:
                 display.scroll("WINNER {}".format(device_first_correct))
             else:
-                display.show(Image.CONFUSED, delay=10, clear=True)
+                display.show(Image.ASLEEP, delay=10, clear=True)
 
 
 #
