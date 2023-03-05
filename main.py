@@ -121,7 +121,8 @@ def main_for_role_question():
                 # briefly show the response on the coordinator node
                 if is_correct == "Y":
                     display.show(Image.YES, delay=100, clear=True)
-                    device_first_correct = device_name
+                    if not device_first_correct:
+                        device_first_correct = device_name
                 elif is_correct == "N":
                     display.show(Image.NO, delay=100, clear=True)
 
