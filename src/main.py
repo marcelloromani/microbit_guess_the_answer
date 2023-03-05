@@ -1,25 +1,7 @@
 import radio
 from microbit import *
 
-# put your nickname here - NOTE: check no one else in the room uses the same nick!
-# DEVICE_NAME = "alice"
-# DEVICE_NAME = "bob"
-DEVICE_NAME = "peter"
-
-# Q (question): the coordinator role,
-#   i.e. the person who sends the challenge to all other participants
-# A (answer): all participants that must guess the correct answer
-APP_ROLE = "Q"
-# APP_ROLE = "A"
-
-#
-# if you are the coordinator
-# configure the challenge, the two answers and the correct one
-#
-CHALLENGE = "27 + 6"
-ANSWER_A = "30"
-ANSWER_B = "33"
-CORRECT_ANSWER = "B"
+import config
 
 #
 # Radio stuff
@@ -79,7 +61,7 @@ def parse_radio_msg(msg: str) -> (str, str, str):
 def send_challenge(challenge: str, answer_a: str, answer_b: str):
     """send the challenge to all participants"""
     msg = "{} A={} B={}".format(challenge, answer_a, answer_b)
-    radio.send(create_radio_msg(DEVICE_NAME, MSG_TYPE_CHALLENGE, msg))
+    radio.send(create_radio_msg(config.DEVICE_NAME, MSG_TYPE_CHALLENGE, msg))
 
 
 def send_result(device_name: str, yes_or_no: str):
@@ -113,7 +95,7 @@ def main_for_role_question():
             elif msg_type == MSG_TYPE_ANSWER:
                 # we received an answer from a participant
                 # notify them of the resoult
-                if msg_content == CORRECT_ANSWER:
+                if msg_content == config.CORRECT_ANSWER:
                     is_correct = "Y"
                 else:
                     is_correct = "N"
@@ -128,8 +110,8 @@ def main_for_role_question():
 
         # button A sends the challenge
         if button_a.was_pressed():
-            display.scroll(CHALLENGE)
-            send_challenge(CHALLENGE, ANSWER_A, ANSWER_B)
+            display.scroll(config.CHALLENGE)
+            send_challenge(config.CHALLENGE, config.ANSWER_A, config.ANSWER_B)
 
         # button B shows the winner, or flashes an icon if we don't have one yet
         if button_b.was_pressed():
@@ -145,7 +127,7 @@ def main_for_role_question():
 
 def send_answer(answer: str):
     """send the user guess"""
-    radio.send(create_radio_msg(DEVICE_NAME, MSG_TYPE_ANSWER, answer))
+    radio.send(create_radio_msg(config.DEVICE_NAME, MSG_TYPE_ANSWER, answer))
 
 
 def main_for_role_answer():
@@ -169,7 +151,7 @@ def main_for_role_answer():
 
             elif msg_type == MSG_TYPE_RESULT:
                 # only process the message if it was directed at us
-                if device_name == DEVICE_NAME:
+                if device_name == config.DEVICE_NAME:
                     if msg_content == "Y":
                         display.show(Image.YES)
                     elif msg_content == "N":
@@ -191,12 +173,12 @@ def main_for_role_answer():
 
 def main():
     radio_setup(RADIO_GROUP)
-    display.scroll(APP_ROLE)
-    display.scroll(DEVICE_NAME)
+    display.scroll(config.APP_ROLE)
+    display.scroll(config.DEVICE_NAME)
 
-    if APP_ROLE == "Q":
+    if config.APP_ROLE == "Q":
         main_for_role_question()
-    elif APP_ROLE == "A":
+    elif config.APP_ROLE == "A":
         main_for_role_answer()
     else:
         print("ERROR APP_ROLE")
