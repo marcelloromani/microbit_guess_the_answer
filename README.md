@@ -8,9 +8,9 @@ One person plays the "Quiz master" and sets the question.
 
 The others have to guess the answer by tapping "A" or "B".
 
-The first to send the correct ansewr wins.
+The first to send the correct answer wins.
 
-# Code setup
+# Code configuration
 
 Each participant gets a micro:bit and needs to customize the code for their role.
 
