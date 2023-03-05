@@ -8,4 +8,6 @@ ufs:
 	pip install microfs
 
 flashit:
-	ufs put src/main.py src/config.py
+	ufs put src/config.py
+	sleep 5
+	ufs put src/main.py
