@@ -70,3 +70,17 @@ Flash the code onto the micro:bit
 * Quiz Master: press B to reveal the name (device id) of the fastest participant to answer correctly.
 
   Press the reset button on the back of the microbit board to clear the winner name.
+
+## Flashing the code with Mu Editor
+
+Mu Editor is one of the easiest way to program the microbit.
+
+* Download the editor from https://codewith.mu/
+
+* Write the code
+
+* Press "Tidy" and "Check" before uploading the code to check for any errors
+
+* Connect the microbit to the computer with a micro-usb cable
+
+* Click "Flash"
