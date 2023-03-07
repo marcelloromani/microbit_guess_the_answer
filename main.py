@@ -194,7 +194,7 @@ def main():
     elif APP_ROLE == "A":
         main_for_role_answer()
     else:
-        print("ERROR APP_ROLE")
+        print("ERR APP_ROLE")
 
 
 if __name__ == "__main__":
