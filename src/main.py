@@ -2,72 +2,14 @@ import radio
 from microbit import *
 
 import config
-
-#
-# Radio stuff
-#
+import game_radio
 
 RADIO_GROUP = 1
-
-
-def radio_setup(group_id: int):
-    """
-    Configure microbit to be part of the specified radio group
-
-    :param group_id: Radio group
-    """
-    radio.config(group=group_id, queue=20)
-    radio.on()
-
-
-#
-# Wire protocol
-#
-
-# character used to separate fields in radio messages
-MSG_SEPARATOR = "|"
-
-# a question sent to all participant that they must solve
-MSG_TYPE_CHALLENGE = "Q"
-
-# the answer that a single participant sends back to the coordinator device
-MSG_TYPE_ANSWER = "A"
-
-# the coordinator tells each individual participant if the answer was correct or not
-MSG_TYPE_RESULT = "R"
-
-
-# format:
-# device name | message type | the message
-# whether the device name represents the sender or the target
-# depends on the message type
-# challenge => we don't really care as it's broadcasted
-# answer => the sender device id
-# response => the target device id to which the response is directed
-def create_radio_msg(src_or_dst_device, msg_type: str, msg: str) -> str:
-    return MSG_SEPARATOR.join([src_or_dst_device, msg_type, msg])
-
-
-def parse_radio_msg(msg: str) -> (str, str, str):
-    device_name, msg_type, msg_content = msg.split(MSG_SEPARATOR)
-    return device_name, msg_type, msg_content
 
 
 #
 # methods for coordinator / question role
 #
-
-
-def send_challenge(challenge: str, answer_a: str, answer_b: str):
-    """send the challenge to all participants"""
-    msg = "{} A={} B={}".format(challenge, answer_a, answer_b)
-    radio.send(create_radio_msg(config.DEVICE_NAME, MSG_TYPE_CHALLENGE, msg))
-
-
-def send_result(device_name: str, yes_or_no: str):
-    """tell a participant if their answer was correct (Y) or not (N)"""
-    radio.send(create_radio_msg(device_name, MSG_TYPE_RESULT, yes_or_no))
-
 
 def main_for_role_question():
     # first device to send a correct answer
@@ -77,24 +19,24 @@ def main_for_role_question():
     while True:
         message = radio.receive()
         if message:
-            device_name, msg_type, msg_content = parse_radio_msg(message)
+            device_name, msg_type, msg_content = game_radio.parse_radio_msg(message)
 
-            if msg_type == MSG_TYPE_CHALLENGE:
+            if msg_type == game_radio.MSG_TYPE_CHALLENGE:
                 # ignore, we only care about responses
                 pass
 
-            elif msg_type == MSG_TYPE_RESULT:
+            elif msg_type == game_radio.MSG_TYPE_RESULT:
                 # ignore, we are the ones sending results
                 pass
 
-            elif msg_type == MSG_TYPE_ANSWER:
+            elif msg_type == game_radio.MSG_TYPE_ANSWER:
                 # we received an answer from a participant
                 # notify them of the resoult
                 if msg_content == config.CORRECT_ANSWER:
                     is_correct = "Y"
                 else:
                     is_correct = "N"
-                send_result(device_name, is_correct)
+                game_radio.send_result(device_name, is_correct)
                 # briefly show the response on the coordinator node
                 if is_correct == "Y":
                     display.show(Image.YES, delay=100, clear=True)
@@ -106,7 +48,7 @@ def main_for_role_question():
         # button A sends the challenge
         if button_a.was_pressed():
             display.scroll(config.CHALLENGE)
-            send_challenge(config.CHALLENGE, config.ANSWER_A, config.ANSWER_B)
+            game_radio.send_challenge(config.CHALLENGE, config.ANSWER_A, config.ANSWER_B)
 
         # button B shows the winner, or flashes an icon if we don't have one yet
         if button_b.was_pressed():
@@ -122,7 +64,7 @@ def main_for_role_question():
 
 def send_answer(answer: str):
     """send the user guess"""
-    radio.send(create_radio_msg(config.DEVICE_NAME, MSG_TYPE_ANSWER, answer))
+    radio.send(game_radio.create_radio_msg(config.DEVICE_NAME, game_radio.MSG_TYPE_ANSWER, answer))
 
 
 def main_for_role_answer():
@@ -134,17 +76,17 @@ def main_for_role_answer():
 
         message = radio.receive()
         if message:
-            device_name, msg_type, msg_content = parse_radio_msg(message)
+            device_name, msg_type, msg_content = game_radio.parse_radio_msg(message)
 
-            if msg_type == MSG_TYPE_CHALLENGE:
+            if msg_type == game_radio.MSG_TYPE_CHALLENGE:
                 # show the challenge sent by the coordinator
                 display.scroll(msg_content)
 
-            elif msg_type == MSG_TYPE_ANSWER:
+            elif msg_type == game_radio.MSG_TYPE_ANSWER:
                 # ignore answers broadcasted by other participants
                 pass
 
-            elif msg_type == MSG_TYPE_RESULT:
+            elif msg_type == game_radio.MSG_TYPE_RESULT:
                 # only process the message if it was directed at us
                 if device_name == config.DEVICE_NAME:
                     if msg_content == "Y":
@@ -167,7 +109,7 @@ def main_for_role_answer():
 
 
 def main():
-    radio_setup(RADIO_GROUP)
+    game_radio.radio_setup(RADIO_GROUP)
     display.scroll(config.APP_ROLE)
     display.scroll(config.DEVICE_NAME)
 

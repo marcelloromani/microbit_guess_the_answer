@@ -8,6 +8,8 @@ ufs:
 	pip install microfs
 
 flashit:
+	ufs put src/game_radio.py
+	sleep 5
 	ufs put src/config.py
 	sleep 5
 	ufs put src/main.py
