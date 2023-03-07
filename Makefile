@@ -9,7 +9,7 @@ ufs:
 
 flashit:
 	ufs put src/game_radio.py
-	sleep 5
+	sleep 1
 	ufs put src/config.py
-	sleep 5
+	sleep 1
 	ufs put src/main.py
