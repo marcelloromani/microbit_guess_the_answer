@@ -75,11 +75,6 @@ def main_for_role_question():
     device_first_correct = ""
 
     while True:
-        # clear data from parsing of previous message
-        device_name = ""
-        msg_type = ""
-        msg_content = ""
-
         message = radio.receive()
         if message:
             device_name, msg_type, msg_content = parse_radio_msg(message)
